@@ -10,18 +10,15 @@ def solve(data: Data) -> int:
     out = 0
     state = 50
     for direction, amount in data.input:
-        if direction == "L":
-            amount *= -1
-            if state + amount < 0:
-                out += (state + amount) // (-100)
-                if state > 0:
-                    out += 1
-            elif state + amount == 0:
+        next = state + (amount if direction == "R" else -amount)
+        out += abs(next // 100)
+        if next <= 0:
+            if state > 0:
                 out += 1
-        else:
-            out += (state + amount) // 100
-        state = (state + amount) % 100
-        print(direction, amount, state, out)
+            if next % 100 != 0:
+                out -= 1
+        state = next % 100
+        # print(direction, amount, state, out)
     return out
 
 
