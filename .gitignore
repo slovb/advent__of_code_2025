@@ -1,0 +1,8 @@
+input.txt
+*.pyc
+.mypy_cache
+.vscode
+*.exe
+*.pdb
+target
+*.ttf
