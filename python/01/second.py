@@ -11,12 +11,9 @@ def solve(data: Data) -> int:
     state = 50
     for direction, amount in data.input:
         next = state + (amount if direction == "R" else -amount)
-        out += abs(next // 100)
-        if next <= 0:
-            if state > 0:
-                out += 1
-            if next % 100 != 0:
-                out -= 1
+        out += abs(next) // 100
+        if next <= 0 and state != 0:
+            out += 1
         state = next % 100
         # print(direction, amount, state, out)
     return out
