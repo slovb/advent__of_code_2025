@@ -7,13 +7,13 @@ class Data:
     input: List[List[int]]
 
 
-def subscore(bank: List[int], numbers: int) -> int:
-    if numbers == 0:
+def subscore(bank: List[int], remaining: int) -> int:
+    if remaining == 0:
         return 0
-    shortened = bank[: len(bank) - numbers + 1]
+    shortened = bank[: len(bank) - (remaining - 1)]
     value = max(shortened)
     index = bank.index(value)
-    return value * 10 ** (numbers - 1) + subscore(bank[index + 1 :], numbers - 1)
+    return value * 10 ** (remaining - 1) + subscore(bank[index + 1 :], remaining - 1)
 
 
 def solve(data: Data) -> int:
