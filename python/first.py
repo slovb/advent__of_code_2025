@@ -1,9 +1,10 @@
 from dataclasses import dataclass
+from typing import List
 
 
 @dataclass(frozen=True)
 class Data:
-    input: list[str]
+    input: List[str]
 
 
 def solve(data: Data) -> int:
@@ -37,20 +38,19 @@ if __name__ == "__main__":
 
     testcases = [
         ("test_0.txt", 2),
-        # ("test_1.txt", 36),
     ]
 
     if len(sys.argv) < 2:
         has_failed = False
         for filename, value in testcases:
             res = main(filename)
-            print("{}   {}\n".format(filename, str(res)))
+            print(f"{filename}   {str(res)}\n")
             if res != value:
                 print("Failed test")
                 has_failed = True
         if not has_failed:
             filename = "input.txt"
-            print("{}   {}\n".format(filename, main(filename)))
+            print(f"{filename}   {main(filename)}\n")
     else:
         for f in sys.argv[1:]:
-            print("{}:\n{}\n".format(f, main(f)))
+            print(f"{f}:\n{main(f)}\n")

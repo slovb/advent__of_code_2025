@@ -7,26 +7,30 @@ class Data:
     input: Set[Tuple[int, int]]
 
 
+def is_removable(boxes: Set[Tuple[int, int]], position: Tuple[int, int]):
+    x, y = position
+    subcount = 0
+    for delta_x in range(-1, 2):
+        for delta_y in range(-1, 2):
+            if delta_x == delta_y == 0:
+                continue
+            if (x + delta_x, y + delta_y) in boxes:
+                subcount += 1
+    return subcount < 4
+
+
 def solve(data: Data) -> int:
     out = 0
+    boxes = set(data.input)
     while True:
-        to_remove = set()
-        for x, y in data.input:
-            subcount = 0
-            for delta_x in range(-1, 2):
-                for delta_y in range(-1, 2):
-                    if delta_x == delta_y == 0:
-                        continue
-                    if (x + delta_x, y + delta_y) in data.input:
-                        subcount += 1
-            if subcount < 4:
-                to_remove.add((x, y))
+        removed = set()
+        for position in boxes:
+            if is_removable(boxes, position):
+                removed.add(position)
                 out += 1
-        if len(to_remove) == 0:
+        if len(removed) == 0:
             break
-        for pos in to_remove:
-            data.input.remove(pos)
-        to_remove = set()
+        boxes = boxes.difference(removed)
     return out
 
 
@@ -57,13 +61,13 @@ if __name__ == "__main__":
         has_failed = False
         for filename, value in testcases:
             res = main(filename)
-            print("{}   {}\n".format(filename, str(res)))
+            print(f"{filename}   {str(res)}\n")
             if res != value:
                 print("Failed test")
                 has_failed = True
         if not has_failed:
             filename = "input.txt"
-            print("{}   {}\n".format(filename, main(filename)))
+            print(f"{filename}   {main(filename)}\n")
     else:
         for f in sys.argv[1:]:
-            print("{}:\n{}\n".format(f, main(f)))
+            print(f"{f}:\n{main(f)}\n")
