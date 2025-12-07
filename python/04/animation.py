@@ -59,7 +59,7 @@ def display(
             draw.rectangle(
                 [
                     (pixel_size * x, pixel_size * y),
-                    (pixel_size * (x + 1), pixel_size * (y + 1)),
+                    (pixel_size * (x + 1) - 1, pixel_size * (y + 1) - 1),
                 ],
                 fill=color,
             )
