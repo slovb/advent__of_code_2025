@@ -33,6 +33,8 @@ def solve(data: Data) -> int:
         for i, x in enumerate(data.input):
             x_group, x_group_i = find_circuit(x)
             for y in data.input[i + 1 :]:
+                if best_distance is not None and abs(y[0] - x[0]) > best_distance:
+                    break
                 if y in x_group:
                     continue
                 delta = distance(x, y)
@@ -59,7 +61,7 @@ def read(filename) -> Data:
         for row in rows:
             x, y, z = list(map(int, row.split(",")))
             input.append((x, y, z))
-        data = Data(input=input)
+        data = Data(input=sorted(input))
         return data
 
 
