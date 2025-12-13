@@ -1,6 +1,9 @@
 from typing import List, Set
 
+from render import render
 from shared import Data, Position, Region, Shape, display, read, variations
+
+IMAGE_PATH = "image/meh"
 
 
 def solve_region(shapes: List[Shape], region: Region):
@@ -20,6 +23,7 @@ def solve_region(shapes: List[Shape], region: Region):
         if all([remaining[i] == 0 for i in range(6)]):
             print("WIN")
             print(display(occupied, region.width, region.height, remaining))
+            render(placed, region, IMAGE_PATH)
             return 1
         candidate = None
         best_score = None
