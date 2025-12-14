@@ -1,7 +1,15 @@
 from typing import List, Set
 
-from render import render
-from shared import Data, Position, Region, Shape, display, read, variations
+from shared.added_dead_pixels import added_dead_pixels
+from shared.data import Data
+from shared.display import display
+from shared.fits import fits
+from shared.position import Position
+from shared.read_data import read_data
+from shared.region import Region
+from shared.render import render
+from shared.shape import Shape
+from shared.variations import variations
 
 IMAGE_PATH = "image/soso"
 
@@ -11,63 +19,6 @@ def solve_region(shapes: List[Shape], region: Region):
     occupied: Set[Position] = set()
     placed: List[Shape] = []
     width, height = 0, 0
-
-    def fits(shape: Shape):
-        for position in shape.positions:
-            if position in occupied:
-                return False
-        return True
-
-    def added_dead_pixels(shape: Shape, new_width: int, new_height: int):
-        min_x = min([p[0] for p in shape.positions])
-        min_y = min([p[1] for p in shape.positions])
-        max_x = min_x + 2
-        max_y = min_y + 2
-        alive: Set[Position] = set()
-        dead: Set[Position] = set()
-
-        def blocked(pos):
-            x, y = pos
-            if x < 0 or region.width < x:
-                return True
-            if y < 0 or region.height < y:
-                return True
-            return pos in shape.positions or pos in occupied
-
-        def process(x, y, alive, dead):
-            batch = set()
-            processing = [(x, y)]
-            while len(processing) > 0:
-                p = processing.pop()
-                if p in alive or p[0] >= new_width or p[1] >= new_height:
-                    for b in batch:
-                        alive.add(b)
-                    return
-                if p in dead:
-                    for b in batch:
-                        dead.add(b)
-                    return
-                px, py = p
-                neighbors = [
-                    (px - 1, py),
-                    (px, py - 1),
-                    (px + 1, py),
-                    (px, py + 1),
-                ]
-                for neighbor in neighbors:
-                    if not blocked(neighbor) and neighbor not in batch:
-                        batch.add(neighbor)
-            # failed to end early
-            for b in batch:
-                dead.add(b)
-
-        for x in range(min_x, max_x):
-            # can ignore outer edge
-            for y in range(min_y, max_y):
-                if (x, y) in alive or (x, y) in dead:
-                    continue
-                process(x, y, alive, dead)
-        return len(dead)
 
     # meh packing, greedy minimize area and try to use the most demanded remaining piece
     while True:
@@ -91,7 +42,7 @@ def solve_region(shapes: List[Shape], region: Region):
             for x in range(0, ux + 1):
                 for y in range(ly, uy + 1):
                     c = shape.translate(x, y)
-                    if fits(c):
+                    if fits(c, occupied):
                         notables.append((x, y, c))
                         break
 
@@ -99,7 +50,7 @@ def solve_region(shapes: List[Shape], region: Region):
             for y in range(0, uy + 1):
                 for x in range(lx, ux + 1):
                     c = shape.translate(x, y)
-                    if fits(c):
+                    if fits(c, occupied):
                         notables.append((x, y, c))
                         break
 
@@ -107,7 +58,7 @@ def solve_region(shapes: List[Shape], region: Region):
                 new_width = max(x + 3, width)
                 new_height = max(y + 3, height)
                 new_area = new_width * new_height
-                deads = added_dead_pixels(c, new_width, new_height)
+                deads = added_dead_pixels(c, new_width, new_height, occupied)
                 score = (new_area, deads, 0 - remaining[c.index])
                 if candidate is None or best_score is None or score < best_score:
                     candidate = c
@@ -167,7 +118,7 @@ def solve(data: Data) -> int:
 
 
 def main(filename):
-    return solve(read(filename))
+    return solve(read_data(filename))
 
 
 if __name__ == "__main__":

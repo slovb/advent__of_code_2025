@@ -1,7 +1,13 @@
 from typing import List, Set
 
-from render import render
-from shared import Data, Position, Region, Shape, display, read, variations
+from shared.data import Data
+from shared.display import display
+from shared.position import Position
+from shared.read_data import read_data
+from shared.region import Region
+from shared.render import render
+from shared.shape import Shape
+from shared.variations import variations
 
 IMAGE_PATH = "image/meh"
 
@@ -121,7 +127,7 @@ def solve(data: Data) -> int:
 
 
 def main(filename):
-    return solve(read(filename))
+    return solve(read_data(filename))
 
 
 if __name__ == "__main__":
